@@ -1,2 +1,16 @@
-import { getContent } from "@/lib/content"; import { Header } from "../components";
-export default async function Pages(){const c=await getContent();return <><Header title="Website content" text="Edit the core copy, branding and hero presentation."/><form className="admin-card editor-form" action="/api/admin/content" method="post"><div className="form-grid"><label>Brand name<input name="brand" defaultValue={c.brand}/></label><label>Contact email<input name="email" type="email" defaultValue={c.email}/></label><label className="wide">Hero eyebrow<input name="eyebrow" defaultValue={c.eyebrow}/></label><label className="wide">Hero headline<input name="heroTitle" defaultValue={c.heroTitle}/></label><label className="wide">Hero introduction<textarea name="heroIntro" rows={4} defaultValue={c.heroIntro}/></label><label className="wide">Hero image URL<input name="heroImage" type="url" defaultValue={c.heroImage}/></label><label className="wide">Statement headline<input name="statementTitle" defaultValue={c.statementTitle}/></label><label className="wide">Statement copy<textarea name="statementBody" rows={4} defaultValue={c.statementBody}/></label></div><div className="form-actions"><span>Changes publish immediately.</span><button type="submit">Save and publish</button></div></form></>}
+import Link from "next/link";
+import { asc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { pages } from "@/db/schema";
+import { Header, Empty } from "../components";
+
+export default async function PagesAdmin(){
+  const rows=db?await db.select().from(pages).orderBy(asc(pages.navOrder)):[];
+  return <><Header title="Pages" text="Create pages, control navigation and build each page from reusable sections."/>
+    <form className="admin-card compact-create" action="/api/admin/page-builder" method="post">
+      <input type="hidden" name="action" value="create-page"/><input name="title" required placeholder="Page title"/><input name="slug" required placeholder="slug"/><button>Create page</button>
+    </form>
+    <section className="admin-card"><div className="card-heading"><h2>Website pages</h2><span>{rows.length} pages</span></div>
+      {!rows.length?<Empty text="No builder pages yet. Create your first page above."/>:<div className="builder-list">{rows.map(p=><article key={p.id}><div><strong>{p.title}</strong><span>/{p.slug}</span></div><span className="badge">{p.published?"Published":"Draft"}</span><Link href={`/admin/pages/${p.id}`}>Edit page →</Link></article>)}</div>}
+    </section></>;
+}
