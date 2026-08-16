@@ -1,23 +1,38 @@
 # Exclusive Restaurant Uniforms
 
-A responsive editorial landing page for a premium hospitality uniform studio.
+A Next.js website with a Neon-backed CMS and client-enquiry CRM.
 
-## Preview
+## Admin
 
-Open `index.html` directly, or run a local static server:
+Visit `/admin` to manage website copy, uniform designs, media, and enquiries. Authentication uses a secure HTTP-only signed session cookie.
+
+## Environment
+
+Copy `.env.example` to `.env.local` for local development. Configure the same values in Vercel for Preview and Production:
+
+- `DATABASE_URL` — Neon pooled PostgreSQL connection string
+- `AUTH_SECRET` — random secret of at least 32 characters
+- `ADMIN_EMAIL` — administrator sign-in email
+- `ADMIN_PASSWORD_HASH` — bcrypt hash, never a plain-text password
+- `BLOB_READ_WRITE_TOKEN` — optional; enables Vercel Blob uploads in a future media-storage pass
+
+Generate the bcrypt password hash locally and add only the resulting hash to Vercel. Never commit or send the plain-text password in chat.
+
+Create the database tables after setting `DATABASE_URL`:
 
 ```bash
-python3 -m http.server 8080
+npm run db:push
 ```
 
-Then visit `http://localhost:8080`.
+## Development
 
-## Included
+```bash
+npm install
+npm run dev
+```
 
-- Responsive desktop and mobile layout
-- Collection, process, about, and contact sections
-- Mobile navigation
-- Subtle scroll-reveal motion with reduced-motion support
-- Semantic HTML and basic accessibility labels
+Production verification:
 
-Replace the placeholder studio name, email address, copy, and remote image URLs before launch.
+```bash
+npm run build
+```
