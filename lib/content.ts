@@ -7,6 +7,8 @@ export const defaultContent = {
   heroTitle: "Dress the experience.", heroIntro: "Bespoke restaurant uniforms that translate your identity into every gesture, every service, every detail.",
   heroImage: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=1500&q=85",
   statementTitle: "Your team is the face of your restaurant.", statementBody: "We create uniforms with the same care you bring to your menu: considered materials, precise construction, and a point of view guests remember.",
+  inkColor: "#191816", paperColor: "#f7f4ed", surfaceColor: "#eee9df", accentColor: "#9a4935",
+  headingFont: "Playfair Display", bodyFont: "DM Sans", contentWidth: "1500", logoText: "ATELIER SERVICE",
 };
 export type SiteContent = typeof defaultContent;
 export async function getContent(): Promise<SiteContent> {

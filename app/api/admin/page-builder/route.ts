@@ -39,6 +39,16 @@ export async function POST(req:NextRequest){
     if(other>=0&&other<all.length){await db.transaction(async tx=>{await tx.update(sections).set({sortOrder:all[other].sortOrder}).where(eq(sections.id,row.id));await tx.update(sections).set({sortOrder:row.sortOrder}).where(eq(sections.id,all[other].id));});}
     return redirect(req,`/admin/pages/${row.pageId}`);
   }
+  if(action==="duplicate-section"){
+    const id=text(f,"id"),[row]=await db.select().from(sections).where(eq(sections.id,id)).limit(1);if(!row)return new NextResponse("Not found",{status:404});
+    await db.insert(sections).values({pageId:row.pageId,type:row.type,sortOrder:row.sortOrder+1,visible:row.visible,content:row.content});return redirect(req,`/admin/pages/${row.pageId}`);
+  }
+  if(action==="delete-section"){
+    const id=text(f,"id"),[row]=await db.delete(sections).where(eq(sections.id,id)).returning({pageId:sections.pageId});return redirect(req,`/admin/pages/${row.pageId}`);
+  }
+  if(action==="delete-page"){
+    const id=text(f,"id"),[row]=await db.select().from(pages).where(eq(pages.id,id)).limit(1);if(!row||row.slug==="")return new NextResponse("The homepage cannot be deleted",{status:400});await db.delete(pages).where(eq(pages.id,id));return redirect(req,"/admin/pages");
+  }
   return new NextResponse("Unknown action",{status:400});
 }
 
